@@ -1,0 +1,180 @@
+#pragma once
+#include <cmath>
+#include <frozen/string.h>
+#include <frozen/unordered_map.h>
+
+constexpr double PI = 3.14159265358979323846;
+constexpr double EARTH_RADIUS_KM = 6371.0;
+constexpr double WALKING_KMPM = 4.5 / 60.0;
+constexpr double BIKING_KMPM = 18.0 / 60.0;
+constexpr double BUS_KMPM = 39.0 / 60.0;
+
+enum class TravelMode {
+    WALK,
+    BIKE,
+    BUS
+};
+
+struct LatLongCoords {
+    double latitude;
+    double longitude;
+};
+
+constexpr double to_radians(double degrees) {
+    return degrees * PI / 180.0;
+}
+
+// ([A-Z_]+), // (.+?),\s(.+?)\n
+// {Building::$1, {to_radians($2), to_radians($3)}},\n
+
+// ([A-Z_]+),
+// {"", Building::$1},\n
+enum class Building {
+    TBA, // 0.0, 0.0
+    ONLINE, // 0.0, 0.0
+    SOUTHWEST_FOREST_SCIENCE_COMPLEX, // 35.17620348343843, -111.65743281804009
+    STEVE_SANGHI_COLLEGE_OF_ENGINEERING, // 35.1772613565739, -111.65705478852685
+    SOCIAL_AND_BEHAVIORAL_SCIENCES_WEST, // 35.17797220958298, -111.65845282199744
+    SOCIAL_AND_BEHAVIORAL_SCIENCES, // 35.17814319259122, -111.65762748058481
+    WA_FRANKE_COLLEGE_OF_BUSINESS, // 35.17871520586243, -111.65696188264731
+    LEARNING_RESOURCES_CENTER, // 35.178951471038616, -111.65616696856311
+    BABBITT_ADMINISTRATIVE_CENTER, // 35.18012186565375, -111.65778950456982
+    BILBY_RESEARCH_CENTER, // 35.1823704379745, -111.6552217562143
+    ARMY_NATIONAL_GUARD_RECRUITING_OFFICE, // 35.18380769837932, -111.65354198108774
+    ANTHROPOLOGY_LABORATORY, // 35.18367146989086, -111.65420734372574
+    INTERNATIONAL_PAVILIION, // 35.18338069517848, -111.65640110260169
+    APPLIED_RESEARCH_AND_DEVELOPMENT, // 35.185290018101455, -111.65810691302507
+    INFORMATION_SYSTEMS_BUILDING, // 35.18631876125533, -111.65769922775597
+    SCHOOL_OF_INFORMATICS_COMPUTING_AND_CYBER_SYTEMS, // 35.186197978321445, -111.65844325337207
+    GATEWAY_STUDENT_SUCCESS_CENTER, // 35.18660757013335, -111.65459268606479
+    STUDENT_AND_ACADEMIC_SERVICES, // 35.187571829580605, -111.65399435890684
+    ARDREY_AUDITORIUM, // 35.188042272870895, -111.65764992542421
+    KITT_SCHOOL_OF_MUSIC, // 35.18870158515072, -111.65790875231755
+    CLIFFORD_WHITE_THEATER, // 35.18860543577643, -111.65757597488326
+    HRM_EUGENE_M_HUGHES_EAST, // 35.18928332688236, -111.65297932552701
+    NAU_HEALTH_AND_LEARNING_CENTER, // 35.18917304132804, -111.65204174781222
+    BABBITT_ACADEMIC_ANNEX, // 35.190586604010214, -111.65446951547868
+    ACADEMIC_ANNEX, // 35.19077611967518, -111.6541638323104
+    ADEL_MATHEMATICS, // 35.19062967579186, -111.65619469297972
+    CLINE_LIBRARY, // 35.18984017271349, -111.65762211257925
+    COLLEGE_OF_EDUCATION, // 35.19122659901538, -111.65794079474891
+    SCHOOL_OF_COMMUNICATION, // 35.19166361245103, -111.65582546099543
+    GEOLOGY_ANNEX, // 35.19209623304888, -111.65711581522086
+    WETTAW, // 35.19296547467282, -111.65327453952752
+    SCIENCE_ANNEX, // 35.192213971663776, -111.65291619689295
+    SCIENCE_LABORATORY, // 35.19233680600876, -111.65419441868744
+    BIOLOGICAL_SCIENCES_ANNEX, // 35.191138145519325, -111.65357801851151
+    SCIENCE_AND_HEALTH_BUILDING, // 35.19140894148339, -111.65492799245023
+    DEPARTMENT_OF_ENGLISH, // 35.19158525882302, -111.65395723776717
+    LIBERAL_ARTS, // 35.19146568693629, -111.65399317444027
+    PHYSICAL_SCIENCES, // 35.19221877711133, -111.65368257890833
+    DEPARTMENT_OF_CHEMISTRY_AND_BIOCHEMISTRY, // 35.191453307966235, -111.65460277564203
+};
+constexpr frozen::unordered_map<frozen::string, Building, 39> building_fstrmap = {
+    {"TBA", Building::TBA},
+    {"Online", Building::ONLINE},
+    {"Southwest Forest Sci", Building::SOUTHWEST_FOREST_SCIENCE_COMPLEX},
+    {"Engineering", Building::STEVE_SANGHI_COLLEGE_OF_ENGINEERING},
+    {"SBS West", Building::SOCIAL_AND_BEHAVIORAL_SCIENCES_WEST},
+    {"SBS-Raul H. Castro", Building::SOCIAL_AND_BEHAVIORAL_SCIENCES},
+    {"W.A.FrankeCollBusiness", Building::WA_FRANKE_COLLEGE_OF_BUSINESS},
+    {"Learning Resource Ctr", Building::LEARNING_RESOURCES_CENTER},
+    {"BABBITT_ADMINISTRATIVE_CENTER", Building::BABBITT_ADMINISTRATIVE_CENTER},
+    {"BILBY_RESEARCH_CENTER", Building::BILBY_RESEARCH_CENTER},
+    {"ARMY_NATIONAL_GUARD_RECRUITING_OFFICE", Building::ARMY_NATIONAL_GUARD_RECRUITING_OFFICE},
+    {"ANTHROPOLOGY_LABORATORY", Building::ANTHROPOLOGY_LABORATORY},
+    {"INTERNATIONAL_PAVILIION", Building::INTERNATIONAL_PAVILIION},
+    {"APPLIED_RESEARCH_AND_DEVELOPMENT", Building::APPLIED_RESEARCH_AND_DEVELOPMENT},
+    {"INFORMATION_SYSTEMS_BUILDING", Building::INFORMATION_SYSTEMS_BUILDING},
+    {"SICCS", Building::SCHOOL_OF_INFORMATICS_COMPUTING_AND_CYBER_SYTEMS},
+    {"GATEWAY_STUDENT_SUCCESS_CENTER", Building::GATEWAY_STUDENT_SUCCESS_CENTER},
+    {"Student Academic Serv", Building::STUDENT_AND_ACADEMIC_SERVICES},
+    {"ARDREY_AUDITORIUM", Building::ARDREY_AUDITORIUM},
+    {"KITT_SCHOOL_OF_MUSIC", Building::KITT_SCHOOL_OF_MUSIC},
+    {"CLIFFORD_WHITE_THEATER", Building::CLIFFORD_WHITE_THEATER},
+    {"HRM_EUGENE_M_HUGHES_EAST", Building::HRM_EUGENE_M_HUGHES_EAST},
+    {"NAU_HEALTH_AND_LEARNING_CENTER", Building::NAU_HEALTH_AND_LEARNING_CENTER},
+    {"BABBITT_ACADEMIC_ANNEX", Building::BABBITT_ACADEMIC_ANNEX},
+    {"ACADEMIC_ANNEX", Building::ACADEMIC_ANNEX},
+    {"Adel Mathematics", Building::ADEL_MATHEMATICS},
+    {"CLINE_LIBRARY", Building::CLINE_LIBRARY},
+    {"COLLEGE_OF_EDUCATION", Building::COLLEGE_OF_EDUCATION},
+    {"SCHOOL_OF_COMMUNICATION", Building::SCHOOL_OF_COMMUNICATION},
+    {"Geology Annex", Building::GEOLOGY_ANNEX},
+    {"WETTAW", Building::WETTAW},
+    {"Science Annex", Building::SCIENCE_ANNEX},
+    {"Science Laboratory", Building::SCIENCE_LABORATORY},
+    {"BIOLOGICAL_SCIENCES_ANNEX", Building::BIOLOGICAL_SCIENCES_ANNEX},
+    {"Science and health", Building::SCIENCE_AND_HEALTH_BUILDING},
+    {"Science and Health", Building::SCIENCE_AND_HEALTH_BUILDING},
+    {"DEPARTMENT_OF_ENGLISH", Building::DEPARTMENT_OF_ENGLISH},
+    {"Liberal Arts", Building::LIBERAL_ARTS},
+    {"Physical Sciences", Building::PHYSICAL_SCIENCES},
+    {"DEPARTMENT_OF_CHEMISTRY_AND_BIOCHEMISTRY", Building::DEPARTMENT_OF_CHEMISTRY_AND_BIOCHEMISTRY}
+};
+
+constexpr frozen::unordered_map<Building, LatLongCoords, 38> building_coords_map = {
+    {Building::TBA, {0.0, 0.0}},
+    {Building::ONLINE, {0.0, 0.0}},
+    {Building::STEVE_SANGHI_COLLEGE_OF_ENGINEERING, {to_radians(35.1772613565739), to_radians(-111.65705478852685)}},
+    {Building::SOCIAL_AND_BEHAVIORAL_SCIENCES_WEST, {to_radians(35.17797220958298), to_radians(-111.65845282199744)}},
+    {Building::SOCIAL_AND_BEHAVIORAL_SCIENCES, {to_radians(35.17814319259122), to_radians(-111.65762748058481)}},
+    {Building::WA_FRANKE_COLLEGE_OF_BUSINESS, {to_radians(35.17871520586243), to_radians(-111.65696188264731)}},
+    {Building::LEARNING_RESOURCES_CENTER, {to_radians(35.178951471038616), to_radians(-111.65616696856311)}},
+    {Building::BABBITT_ADMINISTRATIVE_CENTER, {to_radians(35.18012186565375), to_radians(-111.65778950456982)}},
+    {Building::BILBY_RESEARCH_CENTER, {to_radians(35.1823704379745), to_radians(-111.6552217562143)}},
+    {Building::ARMY_NATIONAL_GUARD_RECRUITING_OFFICE, {to_radians(35.18380769837932), to_radians(-111.65354198108774)}},
+    {Building::ANTHROPOLOGY_LABORATORY, {to_radians(35.18367146989086), to_radians(-111.65420734372574)}},
+    {Building::INTERNATIONAL_PAVILIION, {to_radians(35.18338069517848), to_radians(-111.65640110260169)}},
+    {Building::APPLIED_RESEARCH_AND_DEVELOPMENT, {to_radians(35.185290018101455), to_radians(-111.65810691302507)}},
+    {Building::INFORMATION_SYSTEMS_BUILDING, {to_radians(35.18631876125533), to_radians(-111.65769922775597)}},
+    {Building::SCHOOL_OF_INFORMATICS_COMPUTING_AND_CYBER_SYTEMS, {to_radians(35.186197978321445), to_radians(-111.65844325337207)}},
+    {Building::GATEWAY_STUDENT_SUCCESS_CENTER, {to_radians(35.18660757013335), to_radians(-111.65459268606479)}},
+    {Building::STUDENT_AND_ACADEMIC_SERVICES, {to_radians(35.187571829580605), to_radians(-111.65399435890684)}},
+    {Building::ARDREY_AUDITORIUM, {to_radians(35.188042272870895), to_radians(-111.65764992542421)}},
+    {Building::KITT_SCHOOL_OF_MUSIC, {to_radians(35.18870158515072), to_radians(-111.65790875231755)}},
+    {Building::CLIFFORD_WHITE_THEATER, {to_radians(35.18860543577643), to_radians(-111.65757597488326)}},
+    {Building::HRM_EUGENE_M_HUGHES_EAST, {to_radians(35.18928332688236), to_radians(-111.65297932552701)}},
+    {Building::NAU_HEALTH_AND_LEARNING_CENTER, {to_radians(35.18917304132804), to_radians(-111.65204174781222)}},
+    {Building::BABBITT_ACADEMIC_ANNEX, {to_radians(35.190586604010214), to_radians(-111.65446951547868)}},
+    {Building::ACADEMIC_ANNEX, {to_radians(35.19077611967518), to_radians(-111.6541638323104)}},
+    {Building::ADEL_MATHEMATICS, {to_radians(35.19062967579186), to_radians(-111.65619469297972)}},
+    {Building::CLINE_LIBRARY, {to_radians(35.18984017271349), to_radians(-111.65762211257925)}},
+    {Building::COLLEGE_OF_EDUCATION, {to_radians(35.19122659901538), to_radians(-111.65794079474891)}},
+    {Building::SCHOOL_OF_COMMUNICATION, {to_radians(35.19166361245103), to_radians(-111.65582546099543)}},
+    {Building::GEOLOGY_ANNEX, {to_radians(35.19209623304888), to_radians(-111.65711581522086)}},
+    {Building::WETTAW, {to_radians(35.19296547467282), to_radians(-111.65327453952752)}},
+    {Building::SCIENCE_LABORATORY, {to_radians(35.19233680600876), to_radians(-111.65419441868744)}},
+    {Building::SCIENCE_ANNEX, {to_radians(35.192213971663776), to_radians(-111.65291619689295)}},
+    {Building::BIOLOGICAL_SCIENCES_ANNEX, {to_radians(35.191138145519325), to_radians(-111.65357801851151)}},
+    {Building::SCIENCE_AND_HEALTH_BUILDING, {to_radians(35.19140894148339), to_radians(-111.65492799245023)}},
+    {Building::DEPARTMENT_OF_ENGLISH, {to_radians(35.19158525882302), to_radians(-111.65395723776717)}},
+    {Building::LIBERAL_ARTS, {to_radians(35.19146568693629), to_radians(-111.65399317444027)}},
+    {Building::PHYSICAL_SCIENCES, {to_radians(35.19221877711133), to_radians(-111.65368257890833)}},
+    {Building::DEPARTMENT_OF_CHEMISTRY_AND_BIOCHEMISTRY, {to_radians(35.191453307966235), to_radians(-111.65460277564203)}}
+};
+
+constexpr double haversine_distance(const LatLongCoords coords1, const LatLongCoords coords2) {
+    const double dlat = coords2.latitude - coords1.latitude;
+    const double dlon = coords2.longitude - coords1.longitude;
+
+    const double a = std::sin(dlat / 2.0) * std::sin(dlat / 2.0) +
+               std::cos(coords1.latitude) * std::cos(coords2.latitude) *
+               std::sin(dlon / 2.0) * std::sin(dlon / 2.0);
+
+    const double c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
+
+    return EARTH_RADIUS_KM * c;
+}
+
+constexpr double distance_between_buildings_km(const Building building1, const Building building2){
+    return haversine_distance(building_coords_map.at(building1), building_coords_map.at(building2));
+}
+
+constexpr double time_between_buildings_min(const TravelMode mode, const Building building1, const Building building2){
+    switch(mode) {
+        case TravelMode::WALK: return distance_between_buildings_km(building1, building2) / WALKING_KMPM;
+        case TravelMode::BIKE: return distance_between_buildings_km(building1, building2) / BIKING_KMPM;
+        case TravelMode::BUS: return distance_between_buildings_km(building1, building2) / BUS_KMPM;
+    }
+}
