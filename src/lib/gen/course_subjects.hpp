@@ -3,6 +3,7 @@
 #include <frozen/string.h>
 
 enum class CourseSubject {
+	UNKNOWN,
 	CTECR,
 	SSHCLEP,
 	NLNEXAM,

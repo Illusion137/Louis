@@ -89,6 +89,7 @@ else fputs(std::format("TEST: [{}] => FAILURE w/ value ({})", __test_name, test_
 #endif // LL_ENABLE_KW
 
 #define LL_INFO(fmt, ...) std::print("\033[0;36m[Info]: " fmt "\n\033[0m" __VA_OPT__(,) __VA_ARGS__)
+#define LL_WARN(fmt, ...) std::print("\033[33m[Info]: " fmt "\n\033[0m" __VA_OPT__(,) __VA_ARGS__)
 
 #ifdef LL_NOLOG
     #define LL_LOG(stream, log_type, msg, file, function, line)

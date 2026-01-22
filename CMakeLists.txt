@@ -3,6 +3,7 @@ project(louis LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -16,18 +17,21 @@ include(FetchContent)
 FetchContent_Declare(
     glaze
     GIT_REPOSITORY https://github.com/stephenberry/glaze.git
-    GIT_TAG        main
+    GIT_TAG main
+    GIT_SHALLOW TRUE
 )
 
 FetchContent_MakeAvailable(glaze)
 
-# Lexbor (HTML)
-FetchContent_Declare(
-    lexbor
-    GIT_REPOSITORY https://github.com/lexbor/lexbor.git
-    GIT_TAG v2.6.0
-)
-FetchContent_MakeAvailable(lexbor)
+# Catch2 (testing)
+# git clone https://github.com/libcpr/cpr.git\ncd cpr && mkdir build && cd build\ncmake .. -DCPR_USE_SYSTEM_CURL=ON -DBUILD_SHARED_LIBS=OFF\ncmake --build . --parallel\nsudo cmake --install .
+find_package(Catch2 REQUIRED)
+
+# libxml2 (HTML)
+find_package(LibXml2 REQUIRED)
+
+# OpenSSL (SSL)
+find_package(OpenSSL REQUIRED COMPONENTS SSL Crypto)
 
 # Frozen (HashMap)
 FetchContent_Declare(
@@ -38,16 +42,17 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(frozen)
 
 # CPR (HTTP networking)
+set(CPR_USE_SYSTEM_CURL ON)
 set(CPR_BUILD_TESTS OFF CACHE BOOL "Don't build CPR tests")
 set(CPR_FORCE_USE_SYSTEM_CURL OFF CACHE BOOL "Use built-in curl if needed")
+find_package(cpr REQUIRED)
 
-FetchContent_Declare(
-    cpr
-    GIT_REPOSITORY https://github.com/libcpr/cpr.git
-    GIT_TAG        1.13.0   # Latest stable as of 2025; change if needed
-)
-
-FetchContent_MakeAvailable(cpr)
+# FetchContent_Declare(
+#     cpr
+#     GIT_REPOSITORY https://github.com/libcpr/cpr.git
+#     GIT_TAG        1.13.0   # Latest stable as of 2025; change if needed
+# )
+# FetchContent_MakeAvailable(cpr)
 
 # ============================
 # Executable
@@ -60,35 +65,58 @@ add_executable(PrebuildLouis
     src/prebuild.cpp
     ${SRC_FILES}
 )
+# add_executable(TestLouis
+#     src/test.cpp
+#     ${SRC_FILES}
+# )
 
-target_compile_options(Louis PRIVATE -Wall)
+target_compile_options(Louis PRIVATE -Wall -O3)
 target_compile_options(PrebuildLouis PRIVATE -Wall)
+# target_compile_options(TestLouis PRIVATE -Wall --coverage)
 
 # Link dependencies
 target_link_libraries(Louis
     PRIVATE
     cpr::cpr
     glaze::glaze
-    lexbor
+    LibXml2::LibXml2
+    OpenSSL::Crypto OpenSSL::SSL
     frozen
 )
 target_link_libraries(PrebuildLouis
     PRIVATE
     cpr::cpr
     glaze::glaze
-    lexbor
+    LibXml2::LibXml2
+    OpenSSL::Crypto OpenSSL::SSL
     frozen
 )
+# target_link_libraries(TestLouis
+#     PRIVATE
+#     cpr::cpr
+#     glaze::glaze
+#     LibXml2::LibXml2
+#     OpenSSL::Crypto OpenSSL::SSL
+#     frozen
+#     Catch2::Catch2WithMain
+# )
 
 target_include_directories(Louis
     PRIVATE
     ${PROJECT_SOURCE_DIR}/src/lib
     ${glaze_SOURCE_DIR}/include
-    ${LEXBOR_INCLUDE_DIRS}
 )
 target_include_directories(PrebuildLouis
     PRIVATE
     ${PROJECT_SOURCE_DIR}/src/lib
     ${glaze_SOURCE_DIR}/include
-    ${LEXBOR_INCLUDE_DIRS}
 )
+# target_include_directories(TestLouis
+#     PRIVATE
+#     ${PROJECT_SOURCE_DIR}/src/lib
+#     ${glaze_SOURCE_DIR}/include
+# )
+
+# include(CTest)
+# include(Catch)
+# catch_discover_tests(TestLouis)

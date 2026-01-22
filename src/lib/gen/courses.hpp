@@ -13,6 +13,13 @@ enum class ClassLevel {
 	GRADUATE
 };
 
+enum ClassPrerequisites {
+	PREREQ_HONORS_STUDENT,
+	PREREQ_30_CREDTIS_MAX,
+	PREREQ_15_CREDTIS_MIN,
+	PREREQ_FOUNDATION_ENGLISH_REQUIREMENT,
+};
+
 struct ClassNode {
 	CourseSubject subject;
 	CourseNBR nbr;
@@ -21,6 +28,10 @@ struct ClassNode {
 	std::string description;
 	float credits;
 	ClassLevel level;
+	uint32_t prerequisites_indices[8];
+	uint32_t prerequisites_indices_lengh;
+	uint32_t corequisites_indices[8];
+	uint32_t corequisites_indices_lengh;
 };
 
 const static std::array<ClassNode, 7271> all_courses = {{

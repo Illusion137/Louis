@@ -159,8 +159,8 @@ constexpr double haversine_distance(const LatLongCoords coords1, const LatLongCo
     const double dlon = coords2.longitude - coords1.longitude;
 
     const double a = std::sin(dlat / 2.0) * std::sin(dlat / 2.0) +
-               std::cos(coords1.latitude) * std::cos(coords2.latitude) *
-               std::sin(dlon / 2.0) * std::sin(dlon / 2.0);
+        std::cos(coords1.latitude) * std::cos(coords2.latitude) *
+        std::sin(dlon / 2.0) * std::sin(dlon / 2.0);
 
     const double c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
 

@@ -1,3 +1,3 @@
 cd build
-make
-./Louis
+rm -f Louis
+make && ./Louis $1

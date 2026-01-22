@@ -3,6 +3,7 @@
 #include <frozen/string.h>
 
 enum class CourseNBR {
+	UNKNOWN,
 	C742,
 	C269,
 	C751,

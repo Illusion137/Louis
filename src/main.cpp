@@ -3,7 +3,7 @@
 // #include <array>
 // #include <cstdint>
 
-#include <cstdint>
+// #include <cstdint>
 #include <napi/napi.hpp>
 
 // struct Time {
@@ -191,10 +191,12 @@ int main(int argc, char **argv){
 
     // std::println("Status: {}, Content-Type: {}, Txt: {}", r.status_code , r.header["content-type"],r.text);
 
-    const auto bar = napi::connect::get_campuses();
-    for(uint32_t i = 0; i < bar.size(); i++) {
-        std::println("{}", bar[i].Text);
-    }
+    napi::peoplesoft::search_courses();
+
+    // const auto bar = napi::edu::get_catalog_dropdowns();
+    // std::println("{}", bar.catalog_terms_dropdown.size());
+    // std::println("{}", bar.course_attributes_dropdown.size());
+    // std::println("{}", bar.course_attributes_values_dropdown.size());
 
     return 0;
 }

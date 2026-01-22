@@ -1,3 +1,3 @@
 cd build
-make
-./PrebuildLouis
+rm -f PrebuildLouis
+make && ./PrebuildLouis $1
