@@ -1,3 +1,3 @@
 cd build
 cmake ..
-cp compile_commands.json ../compile_commands.json
+# cp compile_commands.json ../compile_commands.json

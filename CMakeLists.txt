@@ -70,8 +70,8 @@ add_executable(PrebuildLouis
 #     ${SRC_FILES}
 # )
 
-target_compile_options(Louis PRIVATE -Wall -O3)
-target_compile_options(PrebuildLouis PRIVATE -Wall)
+target_compile_options(Louis PRIVATE -Wall -O3 -Wno-reorder-init-list)
+target_compile_options(PrebuildLouis PRIVATE -Wall -Wno-reorder-init-list)
 # target_compile_options(TestLouis PRIVATE -Wall --coverage)
 
 # Link dependencies
@@ -105,16 +105,23 @@ target_include_directories(Louis
     PRIVATE
     ${PROJECT_SOURCE_DIR}/src/lib
     ${glaze_SOURCE_DIR}/include
+    /Users/illusion/dev/cpr/include/
 )
 target_include_directories(PrebuildLouis
     PRIVATE
     ${PROJECT_SOURCE_DIR}/src/lib
     ${glaze_SOURCE_DIR}/include
+    /Users/illusion/dev/cpr/include/
 )
+
+target_compile_features(Louis PRIVATE cxx_std_23)
+target_compile_features(PrebuildLouis PRIVATE cxx_std_23)
+
 # target_include_directories(TestLouis
 #     PRIVATE
 #     ${PROJECT_SOURCE_DIR}/src/lib
 #     ${glaze_SOURCE_DIR}/include
+#    /Users/illusion/dev/cpr/include/
 # )
 
 # include(CTest)

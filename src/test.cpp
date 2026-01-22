@@ -13,3 +13,8 @@
 //     REQUIRE( factorial( 3) == 6 );
 //     REQUIRE( factorial(10) == 3'628'800 );
 // }
+#include <napi/napi.hpp>
+
+int main(){
+    const napi::course_catalog::CourseCatalog &courses = {};
+}

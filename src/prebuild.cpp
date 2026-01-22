@@ -104,8 +104,7 @@ void generate_class_nodes_hpp(const char *filename, const napi::course_catalog::
 
     if(!outfile.is_open()) LL_LOG_FATAL("Failed to open file {} to generate Class Nodes", filepath);
 
-    auto filtered_courses = courses
-        | std::views::filter([](auto course) { return !course.Subject.contains("@"); });
+    auto filtered_courses = courses | std::views::filter([](auto course) { return !course.Subject.contains("@"); });
 
     outfile << auto_generated_header_line();
     outfile << "#pragma once\n";
@@ -212,7 +211,7 @@ int main(int argc, char **argv){
         .name = "CourseNBR",
         .eclass = true,
         .values = emap(course_catalog_nbrs_set, [](auto nbr) -> LLEnum::LLEnum_Value { 
-            return {.id = "C" + nbr, .text = nbr}; 
+            return {.id = "C" + nbr, .text = nbr};
         })
     };
     generate_enum_hpp("course_subjects.hpp", course_subject_enum);
